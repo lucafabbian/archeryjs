@@ -1,14 +1,48 @@
+<!DOCTYPE html>
 <head>
 
   <link rel="stylesheet" href="../dist/flying.css">
-  <script src="../dist/flying.js" defer init></script>
-</head>
-<body>
 
-<!-- anywhere on the page -->
-<div v-scope="{ count: 0 }" class="bg-blue text-xl">
-  {{ count }}
-  <button @click="count++" :class="'bg-red-500 p-2 rounded-md' + ` text-sm${ ' text-white'}`">inc</button>
-</div>
+  <script>
+    window.routes = {
+      home: '/home/*',
+      book: '/books/:book',
+
+    }
+
+    window.store = {
+      hello: 'wolrd',
+    }
+
+    window.localKey = 'my-awesome-website'
+    window.local = {
+      count: 12
+    }
+
+
+
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    sleep(2000).then( () => store.hello = 'done')
+
+
+  </script>
+  <script src="../dist/flying.js" defer load></script>
+</head>
+<body v-scope>
+
+  <div v-if="routes.page == 'home'">
+    homepage
+  </div>
+
+
+  <div v-scope="{ count: 0 }" class="text-xl p-10">
+    {{ store.hello }}
+    <div class="px-5">
+      {{ local.count }}
+      <button @click="local.count++" :class="'bg-red-500 p-2 rounded-md' + ` text-sm${ ' text-white'}`">inc</button> 
+    </div>
+
+    {{ JSON.stringify(routes, null, 2)}}
+  </div>
 
 </body>

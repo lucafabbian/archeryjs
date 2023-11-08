@@ -1,10 +1,10 @@
 {
   "name": "flyingjs",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "Tiny framework for using vue + tailwindcss syntax without a build step!",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently 'five-server --open=examples' 'esbuild ./src/index.js --bundle --outfile=dist/runcss.js --watch'",
+    "dev": "concurrently 'five-server --open=examples' 'esbuild ./src/index.js --bundle --outfile=dist/flying.js --watch'",
     "build": "esbuild ./src/index.js --bundle --outfile=dist/flying.js && esbuild ./src/index.js --bundle --minify --outfile=dist/flying.min.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "npm run build"
@@ -16,12 +16,16 @@
   "author": "Luca Fabbian <luca.fabbian.1999@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@vue-reactivity/watch": "^0.2.0",
+    "@vue/reactivity": "^3.3.8",
     "petite-vue": "^0.4.1",
-    "runcss": "0.1.2"
+    "pico-vue": "^1.1.0",
+    "runcss": "^0.1.5"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.5",
-    "five-server": "^0.3.1"
+    "five-server": "^0.3.1",
+    "regexparam": "^2.0.1"
   }
 }
