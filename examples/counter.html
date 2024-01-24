@@ -1,0 +1,12 @@
+<link rel="stylesheet" href="../dist/archery.css">
+<script src="../dist/archery.js" mount></script>
+
+<script>
+  window.store = reactive({ count: 50 })
+</script>
+
+<div class="text-xl m-10">
+  <button @click="{{store.count--}}" class="bg-red-500 p-2 text-white">-</button>
+  {{store.count}}
+  <button @click="{{store.count++}}" class="bg-red-500 p-2 text-white">+</button>
+</div>

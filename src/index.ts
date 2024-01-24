@@ -1,9 +1,90 @@
 import '../node_modules/runcss/dist/runcss.css' 
 import { parse } from 'regexparam';
+import { reactive, html, watch } from '@arrow-js/core';
+import RunCSS from 'runcss'
 
-import { createApp as createVueApp, reactive, nextTick, watchEffect} from 'pico-vue'
-import RunCSS, {extendRunCSS } from 'runcss'
+/** Create a reactive store that is synced to the browser
+ * persistent localStorage.  */
+const persistent = (key : string, obj: Record<string, any>) => {
+  const store = reactive({
+    ...obj,
+    ...JSON.parse(localStorage[key] ?? '{}')
+  })
 
+  watch( () => localStorage[key] = JSON.stringify(store))
+  return store
+}
+
+
+/** Utility to exec regexs and get the results */
+const execRegexResult = (path: string, result: any) => {
+  let i = 0,
+    out: Record<string, string> = {}
+  let matches = result.pattern.exec(path)
+  while (i < result.keys.length) {
+    out[result.keys[i]] = matches[++i] || null
+  }
+  return out
+}
+
+
+/** Create a router store. This store is automatically
+ * updated everytime the #/haspath changes */
+const router = (routes: Record<string, string>) => {
+
+  const store = reactive({
+    page: '',
+    args: {} as Record<string, string>
+  })
+
+  const updateRouter = () => {
+    const path = location.hash.replace("#", "")
+    for(const [page, route] of Object.entries(routes)){
+      const routeRegex = parse(route)
+      if (routeRegex.pattern.test(path)) {
+        store.page = page 
+        store.args = execRegexResult(path, routeRegex) as any
+        return
+      }
+    }
+    store.page = ''
+    store.args = {} as any
+    return
+  }
+
+  updateRouter()
+  window.addEventListener("hashchange", () => updateRouter())
+  return store
+}
+
+
+const extractTemplate = (template : string) => {
+    let a = 'html`' + template + '`'
+
+  const replacements = [
+    ['&gt;', '>'],
+    ['&lt;', '<'],
+    ['&amp;', '&'],
+
+    [/{#if(.*?)}/g, (_, a) => '${ () => '+ a + ' && html`'],
+    ['{/if}', '`}'],
+
+    [/{#for(.*?)of(.*?)}/g, (_, b, a) => '${ () =>'+ a + '.map( (' + b + ') => html`'],
+    ['{/for}', '`)}'],
+
+
+    ['{{', '${()=>'],
+    ['}}', '}'],
+    ['\\{', '{'],
+    ['\\}', '}'],
+  ]
+
+  for( const [old,replace] of replacements){ // @ts-ignore
+    a = a.replaceAll(old, replace)
+  }
+  
+  return window.eval(a);
+}
 
 
 const extractLiterals = (s :string) => {
@@ -48,9 +129,51 @@ const extractLiterals = (s :string) => {
 
     result += c
   }
-  console.log(result)
   return result
 }
+
+
+
+
+
+const mountApp = () => {
+
+  const {processClasses, startWatching} = RunCSS()
+  for(const element of document.querySelectorAll('*[class]')) {
+    const clazz = element.getAttribute('class') ?? ''
+      processClasses(clazz.includes('${') ? extractLiterals('`' + clazz + '`'): clazz)
+  }
+
+  const hiddenNodes = document.querySelectorAll('*[runcss-cloak]')
+  for(let node of hiddenNodes){
+    node.removeAttribute('runcss-cloak')
+  }
+
+  startWatching(document.body)
+
+  const template = extractTemplate(document.body.innerHTML)
+  document.body.innerHTML = ''  
+  template(document.body)
+
+}
+
+
+Object.assign(window, {html, reactive, persistent, router, extractTemplate, mountApp})
+
+
+if(document.currentScript && document.currentScript.hasAttribute('mount')){
+   document.addEventListener('DOMContentLoaded', mountApp)
+}
+
+
+
+
+/*
+//import { createApp as createVueApp, reactive, nextTick, watchEffect} from '../node_modules/pico-vue/src/index'
+import RunCSS, {extendRunCSS } from 'runcss'
+
+
+
 
 
 
@@ -164,5 +287,5 @@ export const createApp = (initialData?: any, {
 }
 
 if(document.currentScript && document.currentScript.hasAttribute('load')) createApp().mount()
-
+*/
 

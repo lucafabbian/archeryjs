@@ -1,48 +1,81 @@
 <!DOCTYPE html>
 <head>
 
-  <link rel="stylesheet" href="../dist/flying.css">
+  <link rel="stylesheet" href="../dist/archery.css">
 
+  <script src="../dist/archery.js" mount></script>
   <script>
-    window.routes = {
-      home: '/home/*',
-      book: '/books/:book',
+    window.routes = router({
+      home: '/',
+      element: '/element/:elementName',
+    })
 
-    }
+    window.store = reactive({
+      promise: 'loading...',
+      count: 12,
+      elems: [1, 2, 3, 4, 5, 6, 7, 8]
+    })
 
-    window.store = {
-      hello: 'wolrd',
-    }
-
-    window.localKey = 'my-awesome-website'
-    window.local = {
+    window.local = persistent('flying-index-test',{
       count: 12
-    }
+    })
+
 
 
 
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-    sleep(2000).then( () => store.hello = 'done')
+    sleep(5000).then( () => {
+      store.promise = 'done'
+      store.elems.push(56)
+
+    })
 
 
   </script>
-  <script src="../dist/flying.js" defer load></script>
 </head>
-<body v-scope>
+<body>
 
-  <div v-if="routes.page == 'home'">
-    homepage
+  <nav class="h-16 bg-slate-600 text-white">
+    <a class="text-xl p-3 inline-block" href="#/">Home</a>
+    <span class="float-right mx-10">
+      <a class="text-xl p-3 inline-block" href="#/element/1">1</a>
+      <a class="text-xl p-3 inline-block" href="#/element/2">2</a>
+      <a class="text-xl p-3 inline-block" href="#/element/3">3</a>
+    </span>
+  </nav>
+
+  {#if routes.page == 'home'}
+  <div class="mx-2 text-xl">
+    <span class="font-bold">Array loop example:</span>
+    {#for elem of store.elems}
+      <div>{{elem}}</div>
+    {/for}
   </div>
 
-
-  <div v-scope="{ count: 0 }" class="text-xl p-10">
-    {{ store.hello }}
-    <div class="px-5">
-      {{ local.count }}
-      <button @click="local.count++" :class="'bg-red-500 p-2 rounded-md' + ` text-sm${ ' text-white'}`">inc</button> 
-    </div>
-
-    {{ JSON.stringify(routes, null, 2)}}
+  <div class="mx-2 text-xl mt-8">
+    <span class="font-bold">Promise/reactivity example:</span>
+    {{store.promise}}
   </div>
+
+  <div class="text-xl mx-2 mt-8">
+    <button @click="{{local.count--}}" class="${'bg-red-500 p-2 rounded-md' + ` text-sm${ ' text-white'}`}">-</button>
+    {{local.count}}
+    <button @click="{{local.count++}}" class="${'bg-red-500 p-2 rounded-md' + ` text-sm${ ' text-white'}`}">+</button>
+  </div>
+  {/if}
+
+
+
+
+  {#if routes.page == 'element'}
+    <p class="text-xl mx-2 my-8">Page: {{routes.args.elementName}}</p>
+    <a class="text-xl mx-2 text-blue-800 underline" href="#/">go back home</a>  
+  {/if}
+
+
+  {#if routes.page == ''}
+    <p class="text-xl mx-2 my-8">404 Page not found</p>
+    <a class="text-xl mx-2 text-blue-800 underline" href="#/">go back home</a>
+  {/if}
 
 </body>

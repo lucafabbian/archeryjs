@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="../dist/archery.css">
+<script src="../dist/archery.js" mount></script>
+
+<script>
+  window.routes = router({
+    home: '/',
+    subpages: '/subpage/:subpageParam'
+  })
+</script>
+
+<nav class="w-full p-5 mb-10 bg-slate-300 space-x-4">
+  <a href="#/">Home</a>
+  <a href="#/subpage/1">Subpage1</a>
+  <a href="#/subpage/2">Subpage2</a>
+  <a href="#/subpage/3">Subpage3</a>
+</nav>
+
+
+
+<div class="m-5">
+  {#if routes.page == 'home'} You are on the home page! {/if}
+  {#if routes.page == 'subpages'} You are on the subpage {{routes.args.subpageParam}} {/if}
+
+  {#if routes.page == ''} Page not found! {/if}
+</div>

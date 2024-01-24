@@ -1,11 +1,16 @@
 {
-  "name": "flyingjs",
-  "version": "0.0.5",
-  "description": "Tiny framework for using vue + tailwindcss syntax without a build step!",
+  "name": "archeryjs",
+  "version": "0.0.8",
+  "description": "Tiny framework for using arrowjs + tailwindcss syntax without a build step!",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lucafabbian/archeryjs.git"
+  },
+  "homepage": "https://github.com/lucafabbian/archeryjs",
   "scripts": {
-    "dev": "concurrently 'five-server --open=examples' 'esbuild ./src/index.js --bundle --outfile=dist/flying.js --watch'",
-    "build": "esbuild ./src/index.js --bundle --outfile=dist/flying.js && esbuild ./src/index.js --bundle --minify --outfile=dist/flying.min.js",
+    "dev": "concurrently 'five-server --open=examples' 'esbuild ./src/index.js --bundle --outfile=dist/archery.js --watch'",
+    "build": "esbuild ./src/index.js --bundle --outfile=dist/archery.js && esbuild ./src/index.js --bundle --minify --outfile=dist/archery.min.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "npm run build"
   },
@@ -15,14 +20,9 @@
   ],
   "author": "Luca Fabbian <luca.fabbian.1999@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "@vue-reactivity/watch": "^0.2.0",
-    "@vue/reactivity": "^3.3.8",
-    "petite-vue": "^0.4.1",
-    "pico-vue": "^1.1.0",
-    "runcss": "^0.1.5"
-  },
   "devDependencies": {
+    "@arrow-js/core": "^1.0.0-alpha.9",
+    "runcss": "^0.1.5",
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.5",
     "five-server": "^0.3.1",
