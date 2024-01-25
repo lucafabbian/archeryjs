@@ -1,6 +1,6 @@
 {
   "name": "archeryjs",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Tiny framework for using arrowjs + tailwindcss syntax without a build step!",
   "main": "index.js",
   "repository": {
