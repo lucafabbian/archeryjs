@@ -48,7 +48,7 @@ Those shortcuts are very useful, especially while dealing with status such as `h
 - `{{someVariable}}`: this will be avaluated to the value of that variable
 - `{#if myVariable == 'hello world'} <p>html</p> {/if}`: add an if to your html
 - `{#for elem of array} <p>{{elem}}</p> {/for}`: add a for loop
-- listeners like `@click={{console.log("hello!")}}` to add event listeners
+- listeners like `@click={{console.log("hello!", $event)}}` to add event listeners
 
 Note: you may use `\{` and `\}` to escape {} inside your html templates
 
